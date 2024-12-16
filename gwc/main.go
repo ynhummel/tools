@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 )
@@ -15,12 +16,24 @@ func main() {
 
 	flag.Parse()
 
-	fileName := flag.Args()[0]
+	content := make([]byte, 0)
+	fileName := ""
+	var err error
 
-	content, err := os.ReadFile(fmt.Sprintf("./%s", fileName))
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	if len(flag.Args()) == 0 {
+		content, err = io.ReadAll(os.Stdin)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	} else {
+		fileName := flag.Args()[0]
+		content, err = os.ReadFile(fmt.Sprintf("./%s", fileName))
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
 	}
 
 	if flag.NFlag() == 0 {
